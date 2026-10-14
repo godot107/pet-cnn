@@ -314,6 +314,44 @@ if len(res):
 """)
 
 md("""
+### Which unseen breeds are hardest?
+
+Break the unseen-breeds score down by breed. If the model really learned "cat" and "dog", every
+breed should score about the same.
+""")
+
+code("""
+from petcnn import train as _train
+per_breed = {}
+for name in ("smallcnn-unseen-breeds", "resnet18-unseen-breeds"):
+    if not (config.MODELS / name / "model.safetensors").exists():
+        continue
+    net, _ = _train.load_model(name)
+    x, y, rows = data.load("unseen-breeds", "test", "species")
+    rows["correct"] = _train.predict_proba(net, x).argmax(1) == y
+    per_breed[name] = rows.groupby(["breed", "species"]).correct.mean()
+if per_breed:
+    pb = pd.DataFrame(per_breed).sort_values(list(per_breed)[-1])
+    fig, ax = plt.subplots(figsize=(6.5, 4.2))
+    names = [b.replace("_", " ") for b, _ in pb.index]
+    colors = [CAT if sp == "cat" else DOG for _, sp in pb.index]
+    col = list(per_breed)[-1]
+    ax.barh(names, pb[col], color=colors, height=0.6)
+    for yv, v in enumerate(pb[col]):
+        ax.text(v + 0.005, yv, f"{v:.0%}", va="center", fontsize=8)
+    ax.set_xlim(0.6, 1.05); ax.set_xlabel("share labelled correctly"); ax.grid(axis="y", visible=False)
+    ax.set_title(f"{col}: breeds never seen in training (blue = cat, orange = dog)", fontsize=10)
+    plt.show()
+    display(pb.style.format("{:.0%}"))
+""")
+
+md("""
+**Hairless Sphynx cats are the hardest** for both models (about 3 in 4 right). Every cat the model
+studied had fur, so a cat without fur looks less like "cat". This is the kind of blind spot a single
+headline number hides, and it's why the per-breed view matters.
+""")
+
+md("""
 **How to read this**
 
 - The **leaky** score looks great because the model is graded on photos it studied. Numbers like

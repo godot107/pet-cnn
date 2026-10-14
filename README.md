@@ -8,19 +8,32 @@ serving set up on AWS (SageMaker + API Gateway).
 explains every step in plain language, with pictures.
 
 <!-- RESULTS -->
-## Results so far
+## Results
 
 Cat vs dog, graded once on test photos the models never trained on. *Balanced accuracy* averages the
-cat score and the dog score, so a model that always says "dog" scores 50%.
+cat score and the dog score, so a model that always says "dog" scores 50%. All trained on a laptop CPU.
 
 | Test | System | Balanced accuracy | Accuracy (95% range) |
 |---|---|---|---|
 | official | Simple baseline (colours + edges) | 68.8% | 70.2% (68.6–71.7%) |
-| official | **Small CNN, from scratch** (CPU, 30 epochs) | **91.2%** | 91.5% (90.5–92.3%) |
-| official | ResNet-18, transfer learning | *running* | |
+| official | **Small CNN, from scratch** (30 epochs, ~35 min) | **91.2%** | 91.5% (90.5–92.3%) |
+| official | **ResNet-18, transfer learning** (9 epochs, ~5 min) | **97.5%** | 97.2% (96.7–97.7%) |
 | unseen-breeds | Simple baseline | 64.1% | 64.9% (62.8–66.6%) |
-| unseen-breeds | Small CNN, from scratch | *running* | |
-| leaky-2023 | Small CNN graded on its own training photos | *running* | |
+| unseen-breeds | Small CNN, from scratch | 87.2% | 87.5% (86.1–88.8%) |
+| unseen-breeds | ResNet-18, transfer learning | 92.7% | 94.0% (93.0–94.9%) |
+| *leaky-2023* | *Small CNN graded on its own training photos (the 2023 bug)* | *98.8%* | *98.7%* |
+
+**What the numbers say**
+
+- **The bug is worth 7 points.** The same small CNN scores 98.7% when graded on photos it studied,
+  and 91.5% on photos it hasn't seen. A near-perfect score is a reason to check for leaks, not to celebrate.
+- **Deep learning earns its place.** Hand-made colour and edge features reach 69%; a CNN learning
+  its own features from pixels reaches 91% (from scratch) or 97.5% (transfer learning).
+- **Unseen breeds cost 4–5 points**, and the misses aren't evenly spread. **Hairless Sphynx cats** are
+  the hardest: both CNNs get only about 75% of them right, against 87–100% for every other unseen breed.
+  A model that only ever saw furry cats has a reasonable doubt about a cat without fur.
+- **Transfer learning wins, with a caveat:** ResNet-18 was pre-trained on ImageNet, whose 1,000
+  categories include many of these breeds, so part of its edge is prior knowledge of them.
 
 ![Confusion matrix, small CNN, official test](results/official/smallcnn-official_confusion.png)
 <!-- /RESULTS -->

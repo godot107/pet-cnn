@@ -1,0 +1,43 @@
+{
+  "name": "resnet18-official",
+  "scheme": "official",
+  "task": "species",
+  "arch": "resnet18",
+  "trained_on": "official",
+  "epochs_run": 9,
+  "ms_per_image": 3.49,
+  "limit": null,
+  "n": 3669,
+  "accuracy": 0.9719269555737258,
+  "accuracy_ci95": [
+    0.9667484328154811,
+    0.9771054783319706
+  ],
+  "balanced_accuracy": 0.9752964870391692,
+  "macro_f1": 0.9683332264945179,
+  "per_class": {
+    "cat": {
+      "precision": 0.932,
+      "recall": 0.9847844463229078,
+      "f1": 0.957665433621044,
+      "support": 1183
+    },
+    "dog": {
+      "precision": 0.9925589086399339,
+      "recall": 0.9658085277554304,
+      "f1": 0.9790010193679919,
+      "support": 2486
+    }
+  },
+  "confusion": [
+    [
+      1165,
+      18
+    ],
+    [
+      85,
+      2401
+    ]
+  ],
+  "roc_auc": 0.9971036451635499
+}

@@ -3,9 +3,10 @@
 ## Phase 1: local (done 2026-10-14 unless unchecked)
 - [x] Data: Oxford annotations + HF parquet images; cache; pHash audit (43 pairs, 24 cross-split)
 - [x] Classic baseline (HOG + colour histogram, logistic regression) on official + unseen-breeds
-- [x] SmallCNN on CPU: official, unseen-breeds, leaky-2023
+- [x] SmallCNN on CPU: official 91.2% bal, unseen-breeds 87.2%, leaky-2023 98.8% (bug worth ~7 pts)
 - [x] Executed walkthrough notebook (general audience)
-- [x] ResNet-18 (ImageNet-pretrained) locally on CPU: official + unseen-breeds
+- [x] ResNet-18 (ImageNet-pretrained) locally on CPU (33 s/epoch): official 97.5% bal, unseen-breeds 92.7%
+- [x] Per-breed unseen: Sphynx ~75% for both CNNs (hairless); others 82-100%
 - [ ] Reboot (GPU driver mismatch: kernel 580.173.02 vs library 580.178), then `scripts/train_scratch_gpu.sh`
       (from-scratch SmallCNN, GPU-only, 60 epochs) and compare with the CPU run; 224 px later?
 - [ ] Breed task (37 classes) on the official split

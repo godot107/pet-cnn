@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-leaky-2023",
+  "scheme": "leaky-2023",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "leaky-2023",
+  "epochs_run": 30,
+  "ms_per_image": 7.51,
+  "limit": null,
+  "n": 3669,
+  "accuracy": 0.9866448623603161,
+  "accuracy_ci95": [
+    0.9828291087489779,
+    0.9901880621422731
+  ],
+  "balanced_accuracy": 0.9883725872493742,
+  "macro_f1": 0.9848268930978783,
+  "per_class": {
+    "cat": {
+      "precision": 0.9662828947368421,
+      "recall": 0.9932375316990701,
+      "f1": 0.9795748228428511,
+      "support": 1183
+    },
+    "dog": {
+      "precision": 0.9967386873216469,
+      "recall": 0.9835076427996782,
+      "f1": 0.9900789633529055,
+      "support": 2486
+    }
+  },
+  "confusion": [
+    [
+      1175,
+      8
+    ],
+    [
+      41,
+      2445
+    ]
+  ],
+  "roc_auc": 0.9990758050662747
+}

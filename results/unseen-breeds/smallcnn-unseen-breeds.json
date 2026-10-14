@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-unseen-breeds",
+  "scheme": "unseen-breeds",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "unseen-breeds",
+  "epochs_run": 21,
+  "ms_per_image": 7.6,
+  "limit": null,
+  "n": 2395,
+  "accuracy": 0.8751565762004175,
+  "accuracy_ci95": [
+    0.8613778705636743,
+    0.8881002087682672
+  ],
+  "balanced_accuracy": 0.8716908307210032,
+  "macro_f1": 0.8628282994294992,
+  "per_class": {
+    "cat": {
+      "precision": 0.7856328392246295,
+      "recall": 0.86125,
+      "f1": 0.8217054263565892,
+      "support": 800
+    },
+    "dog": {
+      "precision": 0.9268774703557312,
+      "recall": 0.8821316614420063,
+      "f1": 0.9039511725024093,
+      "support": 1595
+    }
+  },
+  "confusion": [
+    [
+      689,
+      111
+    ],
+    [
+      188,
+      1407
+    ]
+  ],
+  "roc_auc": 0.9421630094043887
+}
