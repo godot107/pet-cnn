@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  pet-cnn lab: a private S3 bucket (dataset cache, job code, trained models, proxy Lambda zip) and a
+  least-privilege SageMaker execution role. Costs nothing while idle beyond S3 storage (~0.6 GB).
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules: [{ ObjectOwnership: BucketOwnerEnforced }]
+      LifecycleConfiguration:
+        Rules:
+          - { Id: expire-job-code, Status: Enabled, Prefix: code/, ExpirationInDays: 14 }
+          - { Id: expire-job-output, Status: Enabled, Prefix: jobs/, ExpirationInDays: 60 }
+          - { Id: expire-lambda-zips, Status: Enabled, Prefix: lambda/, ExpirationInDays: 30 }
+          - { Id: abort-multipart, Status: Enabled, AbortIncompleteMultipartUpload: { DaysAfterInitiation: 1 } }
+
+  SageMakerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: sagemaker.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: pet-cnn-training
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject]
+                Resource: !Sub "${Bucket.Arn}/*"
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt Bucket.Arn
+              - Effect: Allow
+                Action: [logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents, logs:DescribeLogStreams]
+                Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/sagemaker/*"
+              - Effect: Allow
+                Action: cloudwatch:PutMetricData
+                Resource: "*"
+                Condition: { StringLike: { "cloudwatch:namespace": "/aws/sagemaker/*" } }
+              - Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: "*"
+              - Effect: Allow   # AWS Deep Learning Containers live in AWS's account 763104351884
+                Action: [ecr:BatchGetImage, ecr:GetDownloadUrlForLayer, ecr:BatchCheckLayerAvailability]
+                Resource: !Sub "arn:${AWS::Partition}:ecr:${AWS::Region}:763104351884:repository/*"
+
+  TrainingLogs:   # pre-created so it gets a retention period
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/sagemaker/TrainingJobs
+      RetentionInDays: 14
+
+Outputs:
+  Bucket:
+    Value: !Ref Bucket
+  RoleArn:
+    Value: !GetAtt SageMakerRole.Arn

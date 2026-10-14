@@ -1,0 +1,17 @@
+# Install torch first from the CUDA index (CPU also works):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+torch>=2.8
+torchvision>=0.23
+numpy>=2.0
+pillow>=11
+pandas>=2.2
+pyarrow>=17          # reads the Hugging Face parquet copy of the images
+scikit-learn>=1.5
+scikit-image>=0.24
+imagehash>=4.3       # near-duplicate audit
+safetensors>=0.4     # model weights without pickle
+pyyaml>=6
+matplotlib>=3.9
+tabulate>=0.9        # pandas.to_markdown for the report
+boto3>=1.40
+botocore[crt]>=1.40  # needed for `aws login` credentials

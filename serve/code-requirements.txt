@@ -1,0 +1,2 @@
+# Installed by the SageMaker PyTorch inference container (ships as code/requirements.txt).
+safetensors>=0.4

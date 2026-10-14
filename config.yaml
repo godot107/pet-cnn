@@ -1,0 +1,63 @@
+# Single source of truth for data, splits, training, SageMaker and serving.
+data:
+  # Oxford-IIIT Pet (Parkhi et al. 2012), CC BY-SA 4.0. Annotations (labels + official split) from
+  # Oxford. Images from the Hugging Face parquet copy (same files and ids; Oxford's server ran at
+  # ~100 KB/s on 2026-10-14), falling back to Oxford's tarball.
+  hf_parquet:
+    - https://huggingface.co/datasets/timm/oxford-iiit-pet/resolve/main/data/train-00000-of-00001.parquet
+    - https://huggingface.co/datasets/timm/oxford-iiit-pet/resolve/main/data/test-00000-of-00001.parquet
+  hf_min_bytes: 300000000
+  urls:
+    images:
+      - https://thor.robots.ox.ac.uk/datasets/pets/images.tar.gz
+      - https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz
+    annotations:
+      - https://thor.robots.ox.ac.uk/datasets/pets/annotations.tar.gz
+      - https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz
+  min_bytes: {images: 700000000, annotations: 15000000}
+  user_agent: "pet-cnn/0.1 (contact@willieman.com)"
+  val_frac: 0.15          # of trainval, stratified by breed
+  seed: 42
+  dup_hamming: 4          # pHash distance (of 64 bits) at or below which two images are near-duplicates
+  # Hard benchmark: these breeds never appear in train/val. Cats are 1/3 of the data, so 4 + 8 keeps the ratio.
+  unseen_breeds:
+    cat: [Bengal, Maine_Coon, Russian_Blue, Sphynx]
+    dog: [beagle, boxer, chihuahua, havanese, newfoundland, pug, samoyed, shiba_inu]
+
+train:
+  task: species           # species (cat/dog, the Trello card) or breed (37 classes)
+  epochs: 30
+  patience: 5             # early stopping on val loss
+  batch_size: 64
+  lr: {smallcnn: 1.0e-3, resnet18: 3.0e-4}
+  weight_decay: 1.0e-4
+  num_threads: 0          # 0 = torch default
+
+sagemaker:
+  # Training runs LOCALLY. These settings only serve the optional, unused `sm-train` path.
+  region: us-east-1
+  lab_stack: pet-cnn-lab   # outputs: Bucket, RoleArn
+  # AWS Deep Learning Container. Verify the tag exists before the first run:
+  # https://github.com/aws/deep-learning-containers/blob/master/available_images.md
+  image_uri: 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-training:2.8.0-gpu-py312-cu129-ubuntu22.04-sagemaker
+  image_verified: false
+  instance_type: ml.g4dn.xlarge   # 1x T4 16 GB: the GPU the Azure run lacked
+  spot: true
+  max_runtime_min: 60
+  max_wait_min: 120               # spot: total time including waiting for capacity
+  max_usd: 2.00                   # preflight refuses a job whose worst case exceeds this
+
+prices:                   # USD per hour, us-east-1 on-demand list prices
+  verified: false         # check https://aws.amazon.com/sagemaker/pricing/ before a paid run
+  ml.g4dn.xlarge: 0.736
+  ml.m5.xlarge: 0.23
+
+serve:
+  # SageMaker Serverless Inference: CPU, scales to zero, billed per ms of compute while invoked.
+  stack: pet-cnn-serve
+  model: smallcnn-official   # models/<name> is packaged into model.tar.gz
+  # PyTorch inference DLC (CPU). Verify the tag before the first deploy (same page as training).
+  image_uri: 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:2.6.0-cpu-py312-ubuntu22.04-sagemaker
+  image_verified: false
+  memory_mb: 3072            # 1024-6144; serverless gives CPU in proportion to memory
+  max_concurrency: 2         # hard cap on parallel invocations (and so on cost)

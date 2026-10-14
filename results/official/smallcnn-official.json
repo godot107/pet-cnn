@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-official",
+  "scheme": "official",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "official",
+  "epochs_run": 30,
+  "ms_per_image": 7.09,
+  "limit": null,
+  "n": 3669,
+  "accuracy": 0.9149632052330335,
+  "accuracy_ci95": [
+    0.9051512673753066,
+    0.9234123739438539
+  ],
+  "balanced_accuracy": 0.9115513485833431,
+  "macro_f1": 0.9043336058871627,
+  "per_class": {
+    "cat": {
+      "precision": 0.8448139350752177,
+      "recall": 0.9019442096365173,
+      "f1": 0.8724448078495503,
+      "support": 1183
+    },
+    "dog": {
+      "precision": 0.9517871986699917,
+      "recall": 0.9211584875301689,
+      "f1": 0.9362224039247752,
+      "support": 2486
+    }
+  },
+  "confusion": [
+    [
+      1067,
+      116
+    ],
+    [
+      196,
+      2290
+    ]
+  ],
+  "roc_auc": 0.9730388739919033
+}
