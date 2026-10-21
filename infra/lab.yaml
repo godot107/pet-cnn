@@ -58,11 +58,8 @@ Resources:
                 Action: [ecr:BatchGetImage, ecr:GetDownloadUrlForLayer, ecr:BatchCheckLayerAvailability]
                 Resource: !Sub "arn:${AWS::Partition}:ecr:${AWS::Region}:763104351884:repository/*"
 
-  TrainingLogs:   # pre-created so it gets a retention period
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: /aws/sagemaker/TrainingJobs
-      RetentionInDays: 14
+  # No TrainingLogs log group here: /aws/sagemaker/TrainingJobs is account-wide and already exists (another
+  # project made it), so creating it fails CloudFormation's name-conflict check. Training is local anyway.
 
 Outputs:
   Bucket:

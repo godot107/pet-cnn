@@ -40,7 +40,7 @@ sagemaker:
   # AWS Deep Learning Container. Verify the tag exists before the first run:
   # https://github.com/aws/deep-learning-containers/blob/master/available_images.md
   image_uri: 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-training:2.8.0-gpu-py312-cu129-ubuntu22.04-sagemaker
-  image_verified: false
+  image_verified: true    # tag checked in ECR 2026-10-21 (pushed 2026-06-15)
   instance_type: ml.g4dn.xlarge   # 1x T4 16 GB: the GPU the Azure run lacked
   spot: true
   max_runtime_min: 60
@@ -58,6 +58,6 @@ serve:
   model: smallcnn-official   # models/<name> is packaged into model.tar.gz
   # PyTorch inference DLC (CPU). Verify the tag before the first deploy (same page as training).
   image_uri: 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:2.6.0-cpu-py312-ubuntu22.04-sagemaker
-  image_verified: false
+  image_verified: true    # tag checked in ECR 2026-10-21 (pushed 2026-06-15)
   memory_mb: 3072            # 1024-6144; serverless gives CPU in proportion to memory
   max_concurrency: 2         # hard cap on parallel invocations (and so on cost)
