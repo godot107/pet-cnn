@@ -190,3 +190,5 @@ this compares with popular public notebooks.
 - A small web page at pets.willieman.com: upload a photo, get an answer.
 
 Code: MIT license.
+
+Deployment record (2026-10-21: deployed, tested, torn down): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
