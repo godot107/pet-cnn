@@ -7,8 +7,9 @@
 - [x] Executed walkthrough notebook (general audience)
 - [x] ResNet-18 (ImageNet-pretrained) locally on CPU (33 s/epoch): official 97.5% bal, unseen-breeds 92.7%
 - [x] Per-breed unseen: Sphynx ~75% for both CNNs (hairless); others 82-100%
-- [ ] Reboot (GPU driver mismatch: kernel 580.173.02 vs library 580.178), then `scripts/train_scratch_gpu.sh`
-      (from-scratch SmallCNN, GPU-only, 60 epochs) and compare with the CPU run; 224 px later?
+- [x] GPU SmallCNN, 60 epochs, `--patience 0` (2026-10-21): official 94.8% bal, unseen-breeds 87.5%, leaky 100%.
+      First try used patience 5 under the 60-epoch cosine schedule: stopped at epoch 14, unseen 74.9% bal.
+- [ ] 224 px on the GPU?
 - [ ] Breed task (37 classes) on the official split
 - [ ] Error analysis: the 20 most confident mistakes (notebook section)
 

@@ -11,17 +11,21 @@ explains every step in plain language, with pictures.
 ## Results
 
 Cat vs dog, graded once on test photos the models never trained on. *Balanced accuracy* averages the
-cat score and the dog score, so a model that always says "dog" scores 50%. All trained on a laptop CPU.
+cat score and the dog score, so a model that always says "dog" scores 50%. Trained on a laptop CPU,
+except the GPU rows (a GTX 1660 graphics card, which made the longer schedule practical).
 
 | Test | System | Balanced accuracy | Accuracy (95% range) |
 |---|---|---|---|
 | official | Simple baseline (colours + edges) | 68.8% | 70.2% (68.6–71.7%) |
 | official | **Small CNN, from scratch** (30 epochs, ~35 min) | **91.2%** | 91.5% (90.5–92.3%) |
+| official | Small CNN, from scratch, GPU (60 epochs, ~8 min) | 94.8% | 95.2% (94.5–95.9%) |
 | official | **ResNet-18, transfer learning** (9 epochs, ~5 min) | **97.5%** | 97.2% (96.7–97.7%) |
 | unseen-breeds | Simple baseline | 64.1% | 64.9% (62.8–66.6%) |
 | unseen-breeds | Small CNN, from scratch | 87.2% | 87.5% (86.1–88.8%) |
+| unseen-breeds | Small CNN, from scratch, GPU (60 epochs) | 87.5% | 89.5% (88.3–90.8%) |
 | unseen-breeds | ResNet-18, transfer learning | 92.7% | 94.0% (93.0–94.9%) |
 | *leaky-2023* | *Small CNN graded on its own training photos (the 2023 bug)* | *98.8%* | *98.7%* |
+| *leaky-2023* | *Same, GPU (60 epochs)* | *100%* | *100%* |
 
 **What the numbers say**
 
@@ -32,6 +36,15 @@ cat score and the dog score, so a model that always says "dog" scores 50%. All t
 - **Unseen breeds cost 4–5 points**, and the misses aren't evenly spread. **Hairless Sphynx cats** are
   the hardest: both CNNs get only about 75% of them right, against 87–100% for every other unseen breed.
   A model that only ever saw furry cats has a reasonable doubt about a cat without fur.
+- **Training twice as long helps on familiar breeds, barely on new ones.** On the GPU the small CNN ran
+  60 epochs instead of 30: +3.6 points on the official test, but only +0.3 balanced on unseen breeds.
+  There, plain accuracy rose 2 points only because the model leaned towards "dog" (the larger class):
+  unseen dog breeds went from 88% to 94% right, unseen cat breeds fell from 86% to 81%. Longer study
+  sharpens what it has seen; it does not teach it about breeds it hasn't. The leaky score rises to a perfect 100%, which is exactly the
+  warning sign: more training means more memorising.
+- **Stopping early can quietly ruin a run.** The first GPU run used "stop if 5 epochs pass without
+  improvement" on top of a learning-rate schedule planned for 60 epochs. It stopped at epoch 14 and
+  scored only 77% on unseen breeds. Letting the schedule finish and keeping the best epoch fixed it.
 - **Transfer learning wins, with a caveat:** ResNet-18 was pre-trained on ImageNet, whose 1,000
   categories include many of these breeds, so part of its edge is prior knowledge of them.
 

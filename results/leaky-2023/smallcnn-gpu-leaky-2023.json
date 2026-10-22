@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-gpu-leaky-2023",
+  "scheme": "leaky-2023",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "leaky-2023",
+  "epochs_run": 60,
+  "ms_per_image": 0.89,
+  "limit": null,
+  "n": 3669,
+  "accuracy": 0.9997274461706187,
+  "accuracy_ci95": [
+    0.9991823385118561,
+    1.0
+  ],
+  "balanced_accuracy": 0.9997988736926791,
+  "macro_f1": 0.9996881787625516,
+  "per_class": {
+    "cat": {
+      "precision": 0.9991554054054054,
+      "recall": 1.0,
+      "f1": 0.9995775242923531,
+      "support": 1183
+    },
+    "dog": {
+      "precision": 1.0,
+      "recall": 0.999597747385358,
+      "f1": 0.99979883323275,
+      "support": 2486
+    }
+  },
+  "confusion": [
+    [
+      1183,
+      0
+    ],
+    [
+      1,
+      2485
+    ]
+  ],
+  "roc_auc": 1.0
+}

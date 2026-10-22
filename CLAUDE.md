@@ -61,6 +61,8 @@ deploy/down.sh [--all]                      # serve stack; --all also empties/de
 
 ## Environment notes
 
-- GPU (GTX 1660) shows a "driver/library version mismatch" until a reboot; `train.device()` falls back
-  to CPU (verified), so everything trains on CPU until then (SmallCNN ~75 s/epoch).
+- GPU (GTX 1660) works since the 2026-10-20 reboot; SmallCNN ~8 s/epoch there vs ~75 s on CPU.
+  `train.device()` falls back to CPU when no GPU; `--device cuda` stops instead.
+- `--patience 0` disables early stopping. Use it with the cosine schedule: patience 5 stopped the 60-epoch
+  GPU run at epoch 14 (unseen breeds 77% vs 89.5% with the full schedule).
 - boto3 needs `botocore[crt]` for `aws login` credentials.

@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-gpu-official",
+  "scheme": "official",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "official",
+  "epochs_run": 60,
+  "ms_per_image": 0.89,
+  "limit": null,
+  "n": 3669,
+  "accuracy": 0.9520305260288907,
+  "accuracy_ci95": [
+    0.9446715726355955,
+    0.958571817934042
+  ],
+  "balanced_accuracy": 0.9477656448384835,
+  "macro_f1": 0.9453949526963263,
+  "per_class": {
+    "cat": {
+      "precision": 0.9171499585749793,
+      "recall": 0.9357565511411665,
+      "f1": 0.9263598326359833,
+      "support": 1183
+    },
+    "dog": {
+      "precision": 0.9691307879772543,
+      "recall": 0.9597747385358005,
+      "f1": 0.9644300727566694,
+      "support": 2486
+    }
+  },
+  "confusion": [
+    [
+      1107,
+      76
+    ],
+    [
+      100,
+      2386
+    ]
+  ],
+  "roc_auc": 0.9862707068289097
+}

@@ -1,0 +1,43 @@
+{
+  "name": "smallcnn-gpu-unseen-breeds",
+  "scheme": "unseen-breeds",
+  "task": "species",
+  "arch": "smallcnn",
+  "trained_on": "unseen-breeds",
+  "epochs_run": 60,
+  "ms_per_image": 0.92,
+  "limit": null,
+  "n": 2395,
+  "accuracy": 0.8951983298538622,
+  "accuracy_ci95": [
+    0.8826722338204593,
+    0.9077244258872651
+  ],
+  "balanced_accuracy": 0.8745885579937305,
+  "macro_f1": 0.8803379349318797,
+  "per_class": {
+    "cat": {
+      "precision": 0.8655126498002663,
+      "recall": 0.8125,
+      "f1": 0.8381689232753062,
+      "support": 800
+    },
+    "dog": {
+      "precision": 0.9087591240875912,
+      "recall": 0.9366771159874608,
+      "f1": 0.9225069465884532,
+      "support": 1595
+    }
+  },
+  "confusion": [
+    [
+      650,
+      150
+    ],
+    [
+      101,
+      1494
+    ]
+  ],
+  "roc_auc": 0.9574776645768024
+}

@@ -23,6 +23,7 @@ def main(argv=None):
     s.add_argument("--task")
     s.add_argument("--epochs", type=int)
     s.add_argument("--limit", type=int, help="random N training images (smoke test)")
+    s.add_argument("--patience", type=int, help="early-stopping patience; 0 = run all epochs, keep the best")
     s.add_argument("--device", default="auto", choices=("auto", "cuda", "cpu"),
                    help="cuda = GPU only, stop if unavailable (no silent CPU fallback)")
     s = sub.add_parser("eval", help="score models/<name> on a test split")
@@ -63,7 +64,7 @@ def main(argv=None):
     elif a.cmd == "train":
         from . import train
         train.train(a.arch, a.scheme, a.name or f"{a.arch}-{a.scheme}", a.task, a.epochs, a.limit,
-                    device_pref=a.device)
+                    device_pref=a.device, patience=a.patience)
     elif a.cmd == "eval":
         evaluate.model(a.name, a.scheme, a.limit)
     elif a.cmd == "predict":

@@ -88,11 +88,15 @@ def _epoch_loss(model, x_all, y_all, loss_fn, dev, batch) -> float:
 
 
 def train(arch: str, scheme: str, name: str, task: str | None = None, epochs: int | None = None,
-          limit: int | None = None, out_dir: Path | None = None, device_pref: str = "auto") -> Path:
+          limit: int | None = None, out_dir: Path | None = None, device_pref: str = "auto",
+          patience: int | None = None) -> Path:
     cfg = config.load()
     tcfg = cfg["train"]
     task = task or tcfg["task"]
     epochs = epochs or tcfg["epochs"]
+    # 0 = no early stopping: run the whole cosine schedule and keep the best epoch. Patience can otherwise
+    # fire while the learning rate is still high and val loss is noisy, before the schedule anneals.
+    patience = tcfg["patience"] if patience is None else patience
     seed = cfg["data"]["seed"]
     seed_all(seed)
     if tcfg.get("num_threads"):
@@ -139,14 +143,14 @@ def train(arch: str, scheme: str, name: str, task: str | None = None, epochs: in
             best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
         else:
             bad += 1
-            if bad >= tcfg["patience"]:
+            if patience and bad >= patience:
                 print(f"  early stop: no val improvement for {bad} epochs")
                 break
 
     model.load_state_dict(best_state)
     out = out_dir or (config.MODELS / name)
     save(model.cpu(), out, {"device": dev.type, "arch": arch, "scheme": scheme, "task": task, "classes": classes,
-                            "best_val_loss": best, "epochs_run": len(history), "limit": limit,
+                            "best_val_loss": best, "epochs_run": len(history), "patience": patience, "limit": limit,
                             "size": preprocess.SIZE, "crop": preprocess.CROP})
     (out / "history.json").write_text(json.dumps(history, indent=2))
     return out
